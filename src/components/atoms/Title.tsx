@@ -49,7 +49,7 @@ const Title: React.FC<TitleProps> = ({
   return (
     <div
       className={clsx(
-        "font-bold text-gray-800",
+        "font-bold text-gray-200",
         textSizes[size],
         mdSize && `md:${textSizes[mdSize]}`,
         {
@@ -62,7 +62,7 @@ const Title: React.FC<TitleProps> = ({
     >
       {parts.map((part, i) =>
         part.toLowerCase() === highlight.toLowerCase() ? (
-          <span key={i} className="text-lime-500 dark:text-lime-400">
+          <span key={i} className="text-purple-500 dark:text-purple-400">
             {part}
           </span>
         ) : (
@@ -75,3 +75,4 @@ const Title: React.FC<TitleProps> = ({
 };
 
 export default Title;
+export type { TitleProps };

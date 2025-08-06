@@ -5,7 +5,9 @@ import Login from '@/pages/auth/login'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
 <React.StrictMode>
-    <Login />
+    <div className='font-mono font-semibold tracking-tight'>
+        <Login />
+    </div>
 </React.StrictMode>,
 )
 
