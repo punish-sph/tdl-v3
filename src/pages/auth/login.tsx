@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import Card from "@/components/atoms/Card";
 import Title from "@/components/atoms/Title";
 import InputField from "@/components/molecules/InputField";
@@ -6,88 +7,86 @@ import Button from "@/components/atoms/Button";
 import Description from "@/components/atoms/Description";
 
 const LoginPage: React.FC = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [identification, setIdentification] = useState("");
+  const [divineSeal, setDivineSeal] = useState("");
+  const [invoking, setInvoking] = useState(false);
+  const [omen, setOmen] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const invokeAccess = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
+    setInvoking(true);
+    setOmen("");
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      if (!email || !password) {
-        throw new Error("Email dan password harus diisi");
+      if (!identification || !divineSeal) {
+        throw new Error("All are sinners. Yet only the resolute are permitted through.");
       }
-      
-      if (!email.includes("@")) {
-        throw new Error("Email tidak valid");
+
+      const res = await window.auth.login(identification, divineSeal);
+      if (!res.success) {
+        throw new Error("Your devotion lacks weight.");
       }
-      
-      console.log("Login berhasil", { email, password });
+
+      // Redirect ke halaman utama
+      window.location.href = "/user/pages";
     } catch (err: any) {
-      setError(err.message || "Terjadi kesalahan saat login");
+      setOmen(err.message || "The will of the Gods forbids passage—for now.");
     } finally {
-      setLoading(false);
+      setInvoking(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
-      <Card 
-        padding="lg" 
-        borderColor="purple" 
-        className="w-full max-w-md"
-      >
-        <form onSubmit={handleSubmit} >
-          <div className="mb-8 text-center">
-            <Title 
-              text="Selamat Datang Kembali" 
-              highlight="Kembali"
+    <div className="min-h-screen bg-zinc-950 text-zinc-200 flex items-center justify-center px-4">
+      <Card padding="xl" borderColor="purple" className="w-full max-w-md border-2 border-purple-600">
+        <form onSubmit={invokeAccess}>
+          <div className="text-center">
+            <Title
+              text="Rejection from the God's"
+              highlight="God's"
               size="xl"
               align="center"
             />
             <Description color="muted" align="center">
-              Masuk untuk melanjutkan ke akun Anda
+              "Fools do not beg. They declare."
             </Description>
           </div>
 
-          {error && (
-            <div className="mb-4 p-3 bg-red-500/20 border border-red-500 text-red-500 text-sm">
-              {error}
+          {omen && (
+            <div className="mb-4 p-3 bg-red-900/10 border border-red-700 text-red-400 text-sm flex items-start gap-2">
+              <ExclamationTriangleIcon className="w-5 h-5 mt-0.5" />
+              <span>{omen}</span>
             </div>
           )}
 
           <InputField
-            label="Email"
-            name="email"
-            id="email"
-            placeholder="email@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            label="Code"
+            name="identification"
+            id="identification"
+            placeholder="••••••••"
+            value={identification}
+            onChange={(e) => setIdentification(e.target.value)}
           />
 
           <InputField
-            label="Password"
-            name="password"
-            id="password"
+            label="Seal"
+            name="divineSeal"
+            id="divineSeal"
             type="password"
             placeholder="••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={divineSeal}
+            onChange={(e) => setDivineSeal(e.target.value)}
           />
+
           <Button
             type="submit"
             variant="purple"
             size="lg"
             width="full"
-            isLoading={loading}
-            loadingText="Memproses..."
+            isLoading={invoking}
+            loadingText="Swearing fealty..."
           >
-            Masuk
+            Submit to the Order
           </Button>
         </form>
       </Card>
