@@ -1,0 +1,21 @@
+q
+
+     MMMMMMMMMMPPPOII!              user@pale-star          |
+  MMMMMMMMMMMMMPPPOOOII!!           ------------------------|
+ MMMMMMMMMMMMMPPPPOOOOIII!          OS: Pale Linux x86_64   |  
+MMMMMMMMMMMMPPPPPOOOOOOII!!         Host: StupidShit 3000   |
+MMMMMOOOOOOPPPPPPPPOOOOMII!         Kernel: 6.6.12          |
+MMMMM..    OPPMMP    .,OMI!         Uptime: 1337 days       |
+MMMM::   o  OPMP  o   ::I!!         Packages: 666 (xbps)    |
+  NNM:::.,,OOPM!P,.::::!!           Shell: zsh 5.9          |
+ MMNNNNNOOOOPMO!!IIPPO!!O!          Resolution: 1920x1080   |
+ MMMMMNNNNOO:!!:!!IPPPPOO!          WM: Hyprland            |
+  MMMMMNNOOMMNNIIIPPPOO!!           Terminal: ElectronTerm  |
+     MM             O                                       |
+      M            O!                                       |
+       I           I                                        |
+        O!       !O                                         |
+        OO       OO                                         |
+         PPPPPPPPP                                          |
+____________________________________________________________|
+Initializing secure shell...

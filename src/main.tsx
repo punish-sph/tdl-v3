@@ -1,13 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
-import Login from '@/pages/auth/login'
+import App from '@/App'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
 <React.StrictMode>
-    <div className='font-mono font-semibold tracking-tight'>
-        <Login />
-    </div>
+    <App/>
 </React.StrictMode>,
 )
 

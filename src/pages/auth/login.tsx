@@ -1,95 +1,102 @@
-import React, { useState } from "react";
-import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
-import Card from "@/components/atoms/Card";
-import Title from "@/components/atoms/Title";
-import InputField from "@/components/molecules/InputField";
-import Button from "@/components/atoms/Button";
-import Description from "@/components/atoms/Description";
+import React, { useState, useEffect } from "react";
+import rawNeofetch from "@/assets/ghost.txt?raw";
 
 const LoginPage: React.FC = () => {
-  const [identification, setIdentification] = useState("");
-  const [divineSeal, setDivineSeal] = useState("");
-  const [invoking, setInvoking] = useState(false);
-  const [omen, setOmen] = useState("");
+  const [phase, setPhase] = useState<"boot" | "username" | "password">("boot");
+  const [terminalLines, setTerminalLines] = useState<string[]>([]);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const invokeAccess = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setInvoking(true);
-    setOmen("");
+  const cleanNeofetch = rawNeofetch
+    .split(/\r?\n/)
+    .map((line) => line.replace(/\x1b\[[0-9;]*m/g, "").trimEnd())
+    .filter((line) => line.trim() !== "");
 
-    try {
-      if (!identification || !divineSeal) {
-        throw new Error("All are sinners. Yet only the resolute are permitted through.");
+  useEffect(() => {
+    if (phase === "boot") {
+      let i = 0;
+      setTerminalLines([]);
+      const timer = setInterval(() => {
+        if (i < cleanNeofetch.length) {
+          setTerminalLines((prev) => [...prev, cleanNeofetch[i]]);
+          i++;
+        } else {
+          clearInterval(timer);
+          setTimeout(() => setPhase("username"), 500);
+        }
+      }, 100);
+      return () => clearInterval(timer);
+    }
+  }, [phase]);
+
+  const handleUsernameEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && username.trim()) {
+      setPhase("password");
+    }
+  };
+
+  const handlePasswordEnter = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && password.trim()) {
+      setError("");
+      try {
+        const res = await window.auth.login(username, password);
+        if (!res.success) throw new Error("Login failed.");
+        window.location.href = "/#/user";
+      } catch (err: any) {
+        setError(err.message || "Access denied.");
+        setUsername("");
+        setPassword("");
+        setTimeout(() => setPhase("boot"), 500);
       }
-
-      const res = await window.auth.login(identification, divineSeal);
-      if (!res.success) {
-        throw new Error("Your devotion lacks weight.");
-      }
-
-      // Redirect ke halaman utama
-      window.location.href = "/user/pages";
-    } catch (err: any) {
-      setOmen(err.message || "The will of the Gods forbids passage—for now.");
-    } finally {
-      setInvoking(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-200 flex items-center justify-center px-4">
-      <Card padding="xl" borderColor="purple" className="w-full max-w-md border-2 border-purple-600">
-        <form onSubmit={invokeAccess}>
-          <div className="text-center">
-            <Title
-              text="Rejection from the God's"
-              highlight="God's"
-              size="xl"
-              align="center"
-            />
-            <Description color="muted" align="center">
-              "Fools do not beg. They declare."
-            </Description>
+    <div className="min-h-screen bg-black text-red-600 font-mono p-4">
+      <div className="whitespace-pre leading-snug">
+        {terminalLines.map((line, idx) => (
+          <div key={idx} className="min-h-[1em]">
+            {line || "\u00A0"}
           </div>
+        ))}
+      </div>
 
-          {omen && (
-            <div className="mb-4 p-3 bg-red-900/10 border border-red-700 text-red-400 text-sm flex items-start gap-2">
-              <ExclamationTriangleIcon className="w-5 h-5 mt-0.5" />
-              <span>{omen}</span>
-            </div>
-          )}
-
-          <InputField
-            label="Code"
-            name="identification"
-            id="identification"
-            placeholder="••••••••"
-            value={identification}
-            onChange={(e) => setIdentification(e.target.value)}
+      {phase === "username" && (
+        <div className="flex items-center mt-2">
+          <span>{">"} Username: </span>
+          <input
+            type="text"
+            autoFocus
+            className="bg-transparent border-none outline-none flex-1 text-red-600 ml-2"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            onKeyDown={handleUsernameEnter}
           />
+        </div>
+      )}
 
-          <InputField
-            label="Seal"
-            name="divineSeal"
-            id="divineSeal"
-            type="password"
-            placeholder="••••••••"
-            value={divineSeal}
-            onChange={(e) => setDivineSeal(e.target.value)}
-          />
+      {phase === "password" && (
+        <div className="mt-2">
+          <div className="flex items-center">
+            <span>{">"} Username: </span>
+            <span className="ml-2">{username}</span>
+          </div>
+          <div className="flex items-center mt-2">
+            <span>{">"} Password: </span>
+            <input
+              type="password"
+              autoFocus
+              className="bg-transparent border-none outline-none flex-1 text-red-600 ml-2"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={handlePasswordEnter}
+            />
+          </div>
+        </div>
+      )}
 
-          <Button
-            type="submit"
-            variant="purple"
-            size="lg"
-            width="full"
-            isLoading={invoking}
-            loadingText="Swearing fealty..."
-          >
-            Submit to the Order
-          </Button>
-        </form>
-      </Card>
+      {error && <div className="mt-2 text-red-900">{">"} {error}</div>}
     </div>
   );
 };
