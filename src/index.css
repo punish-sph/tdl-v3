@@ -4,11 +4,34 @@
   font-family: "JetBrainsMono", monospace;
   line-height: 1.4;
   font-weight: 400;
-  color: #00ff00;
+  color: #ff0000;
   background-color: #000000;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #8b0000;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ff0000;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #8b0000 #000000;
 }
